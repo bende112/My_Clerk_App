@@ -2,7 +2,12 @@ import { auth, ClerkProvider, currentUser } from '@clerk/nextjs'
 import { UserButton } from "@clerk/nextjs";
 import { Inter } from "next/font/google";
 import "./globals.css";
+import Footer from './components/Footer';
+import Header from './components/Header';
+import { sql} from "@vercel/postgres";
+import CreateProfile from './components/CreateProfile';
 import Link from 'next/link';
+
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -13,16 +18,23 @@ export const metadata = {
 
 export default async function RootLayout({ children }) {
   const { userId } = auth();
-  console.log("userId", userId);
-  const user = await currentUser
-  console.log("user", user);
+  const profileRes =await sql`SELECT * FROM profiles WHERE clerk_user_id = ${userId}`;
+  console.log(profileRes);
+
+  // const user = await currentUser
+
   return (
     <ClerkProvider>
+
     <html lang="en">
       <body className={inter.className}>
+        <Header />
         {userId && <UserButton afterSignOutUrl="/" />}
-        {userId && <Link href="/sign-in">Sign In</Link>}
-        {children}</body>
+        {profileRes.rowCount !== 0 && children}
+        {/* {userId && <Link href="/sign-in">Sign In</Link>} */}
+        {profileRes.rowCount === 0 && <CreateProfile />}
+        <Footer />
+        </body>
     </html>
     </ClerkProvider>
   );

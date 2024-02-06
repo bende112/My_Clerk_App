@@ -1,0 +1,27 @@
+CREATE TABLE users (
+    id SERIAL PRIMARY,
+    title text,
+    content text
+);
+
+CREATE TABLE follows (
+    id SERIAL PRIMARY KEY,
+    follower_id INT,
+    followee_id INT,
+    FOREIGN KEY (follower_id) REFERENCES users(id),
+    FOREIGN KEY (followee_id) REFERENCES users(id)
+);
+
+
+
+INSERT INTO users (title, content) VALUES
+('best places', 'Singapore, Bruge, Agadir'),
+('best food', 'Curry, steak, deserts'),
+('best activities ', 'swimming, football, music, concerts and siteseeing')
+
+
+
+
+
+
+
